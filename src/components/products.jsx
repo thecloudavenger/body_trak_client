@@ -21,7 +21,6 @@ class Products extends Component {
       if (cartResponse.status === 201) {
         cartId = cartResponse.data.id;
         localStorage.setItem('cartId', cartId);
-        this.addItemstoCart(cartId,product,1);
         toast.success('Cart Created Successfully.')
 
       } else {
