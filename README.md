@@ -1,4 +1,4 @@
-# body_trak_client
+# bodytrak_client
 
 # If time permitted
 - Adding formatiing(prettier)
