@@ -32,6 +32,9 @@ const NavBar = ({ user }) => {
             <NavLink className="nav-item nav-link" to="/products">
               Products
             </NavLink>
+            <NavLink className="nav-item nav-link" to="/cart">
+              Cart
+            </NavLink>
             <NavLink className="nav-item nav-link" to="/orders">
               Orders
             </NavLink>

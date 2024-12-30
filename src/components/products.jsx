@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { getProducts } from "../services/productService";
-
+import { createCart,addToCart } from "../services/cartService";
+import { toast } from "react-toastify";
 
 class Products extends Component {
   state = {
@@ -10,7 +11,42 @@ class Products extends Component {
 
   async componentDidMount() {
     const { data: products } = await getProducts();
-    this.setState({ products });
+    this.setState({ products });    
+  }
+
+  async persistCartDB(product){
+    try {
+      let cartId;
+      const cartResponse = await createCart();
+      if (cartResponse.status === 201) {
+        cartId = cartResponse.data.id;
+        localStorage.setItem('cartId', cartId);
+        this.addItemstoCart(cartId,product,1);
+        toast.success('Cart Created Successfully.')
+
+      } else {
+        console.error('Failed to create cart:', cartResponse.data);
+        throw new Error('Failed to create cart.'); 
+      }
+    } catch (error) {
+      console.error('Error adding product to cart:', error);
+      throw error; 
+    }
+  }
+
+  async addItemstoCart(cartId,product,quantity){
+    try {
+      const cartItemResponse = await addToCart(cartId,product.id,quantity);
+      if (cartItemResponse.status === 201) {
+        toast.success('Item added to cart Successfully.')
+      } else {
+        console.error('Failed to add to cart:', cartItemResponse.data);
+        throw new Error('Failed to add to cart.'); 
+      }
+    } catch (error) {
+      console.error('Error adding product to cart:', error);
+      throw error; 
+    }
   }
 
   addToCart = (product) => {
@@ -20,6 +56,18 @@ class Products extends Component {
         cart: [...prevState.cart, { ...product, quantity: 1 }],
         }));
     }
+    try {
+      let cartId = localStorage.getItem('cartId');
+      if (!cartId) {
+        this.persistCartDB();
+      }
+      this.addItemstoCart(cartId,product,1);
+
+    } catch (error) {
+      console.error('Error interacting cart:', error);
+      throw error; 
+    }
+
   };
 
   render() {
@@ -45,7 +93,7 @@ class Products extends Component {
                       className="add-to-cart-button"
                       onClick={() => this.addToCart(product)}
                       disabled={cart.some((item) => item.id === product.id)}
-                    > + </button>
+                    > Add to Cart </button>
                   </div>
                 </td>
               </tr>

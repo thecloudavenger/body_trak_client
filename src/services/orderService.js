@@ -26,3 +26,29 @@ export function getOrders() {
   );
 
 }
+
+
+export function createOrder(cartId) {
+  const api = axios.create({
+    baseURL: apiEndpoint, 
+  });
+  
+  api.interceptors.request.use(
+    (config) => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `JWT ${token}`;
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  return api.post(
+    `/store/orders/`,
+    { cart_id: cartId}
+  );
+
+}
