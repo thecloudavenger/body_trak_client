@@ -6,8 +6,7 @@ import LoginForm from "./components/loginForm";
 import Logout from "./components/logout";
 import Products from "./components/products";
 import Orders from "./components/orders";
-import CartManager from ".component/CartManager";
-
+import cartManager from "./components/cartManager";
 import auth from "./services/authService";
 
 
@@ -34,7 +33,7 @@ class App extends Component {
             <Route path="/logout" component={Logout} />
             <Route path="/products" component={Products} />
             <Route path="/orders" component={Orders} />
-            <Route path="/cart" component={CartManager} />
+            <Route path="/cart" component={cartManager} />
             <Redirect from="/" exact to="/login" />
           </Switch>
         </main>
