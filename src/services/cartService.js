@@ -46,7 +46,7 @@ export function addToCart(cartId, productId, quantity = 1) {
     );
 
     return api.post(
-        `/store/carts/${cartId}/items/`,
+        `store/carts/${cartId}/items/`,
         { product_id: productId, 
           quantity: quantity }
       );
@@ -72,13 +72,13 @@ export function getCartItems(cartId) {
     );
   
     return api.get(
-      apiEndpoint +  `/store/carts/${cartId}/items/`,
+      apiEndpoint +  `store/carts/${cartId}/items/`,
     );
   
   }
 
 
-  export function getCartId(cartId) {
+  export function getCartId() {
     const api = axios.create({
       baseURL: apiEndpoint, 
     });
@@ -97,7 +97,7 @@ export function getCartItems(cartId) {
     );
   
     return api.get(
-      apiEndpoint +  `/store/carts/`,
+      apiEndpoint +  `store/carts/`,
     );
   
   }

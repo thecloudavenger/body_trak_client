@@ -23,7 +23,7 @@ class cartManager extends Component {
           cartId = (cartResponse.data[0].id);
           toast.success('Initiating Order');
           await createOrder(cartId);  
-          toast.success('Order Success');     
+          toast.success('Order Success');
         }
       }
       else
