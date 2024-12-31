@@ -14,8 +14,17 @@ class cartManager extends Component {
       let cartId ;
       const cartResponse = await getCartId();
       if (cartResponse.status === 200) {
-        cartId = (cartResponse.data[0].id);
-        await createOrder(cartId);       
+        if(cartResponse.data.length == 0)
+        {
+          toast.success('No cart to create an order.');  
+        }
+        else
+        {
+          cartId = (cartResponse.data[0].id);
+          toast.success('Initiating Order');
+          await createOrder(cartId);  
+          toast.success('Order Success');     
+        }
       }
       else
       {

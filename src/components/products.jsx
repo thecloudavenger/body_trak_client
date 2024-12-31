@@ -18,7 +18,7 @@ class Products extends Component {
     try {
       let cartId;      
       // Step 1: Fetch existing cart or create a new one
-      const cartResponse = await getCartId(); //TOBEFIXED
+      const cartResponse = await getCartId();
       if (cartResponse.status === 200) {
         if(cartResponse.data.length == 0)
         {
@@ -27,7 +27,7 @@ class Products extends Component {
             cartId = createCartResponse.data.id;
             toast.success("Cart created successfully.");
           } else {
-            throw new Error("Failed to create a cart.");
+            toast.error("Error while creating cart.");
           }
         }       
         else
