@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { getCartItems } from '../services/cartService';
 import { createOrder } from '../services/orderService';
 import { toast } from "react-toastify";
-import { addToCart } from '../services/cartService';
+import { createCart,addToCart,getCartId } from "../services/cartService";
 
 class cartManager extends Component {
   state = {   
@@ -11,13 +11,18 @@ class cartManager extends Component {
 
   async handleCreateOrder() {
     try {
-      let cartId = localStorage.getItem('cartId');
-      if (cartId) {
-        await createOrder(cartId);
-        localStorage.removeItem('cartId');
-        toast.success('Order Created Successfully.');
+      let cartId ;
+      const cartResponse = await getCartId();
+      if (cartResponse.status === 200) {
+        cartId = (cartResponse.data[0].id);
+        await createOrder(cartId);       
       }
-    } catch (error) {
+      else
+      {
+        throw new Error('Failed to create cart.'); 
+      }
+    } 
+    catch (error) {
       console.error('Error interacting cart:', error);
       throw error; 
     }
@@ -25,13 +30,24 @@ class cartManager extends Component {
 
   async componentDidMount() {
     try {
-      let cartId = localStorage.getItem('cartId');
-      if (cartId) {
-        const { data: cart } = await getCartItems(cartId);
-        this.setState({ cart });
+      let cartId ;
+      const cartResponse = await getCartId();
+      if (cartResponse.status === 200) {
+        if(cartResponse.data.length == 0)
+          console.log('Cart Is empty');        
+        else
+        {
+          cartId = (cartResponse.data[0].id);
+          const { data: cart } = await getCartItems(cartId);        
+          this.setState({ cart });
+        }
       }
-    } catch (error) {
-      console.error('Error interacting cart:', error);
+      else
+      {
+        throw new Error('Error while getting cart details'); 
+      }
+    } 
+    catch (error) {
       throw error; 
     }
   }
@@ -42,11 +58,11 @@ class cartManager extends Component {
       <div>
         <h2>My Cart</h2>
         {cart.length === 0 ? (
-          <p className="empty-cart"></p>
+          <p className="empty-cart">Cart is empty.</p>
         ) : (
           <div>
             <ul>
-              {cart.items.map((item) => (
+              {cart.map((item) => (
                 <li key={item.id} className="cart-item">
                   <div className="item-info">
                     <div className="item-details">

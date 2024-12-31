@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { getProducts } from "../services/productService";
-import { createCart,addToCart } from "../services/cartService";
+import { createCart,addToCart,getCartId,getCartItems } from "../services/cartService";
 import { toast } from "react-toastify";
 
 class Products extends Component {
@@ -14,37 +14,46 @@ class Products extends Component {
     this.setState({ products });    
   }
 
-  async persistCartDB(product){
+  async persistCartAndAddItem(product, quantity) {
     try {
-      let cartId;
-      const cartResponse = await createCart();
-      if (cartResponse.status === 201) {
-        cartId = cartResponse.data.id;
-        localStorage.setItem('cartId', cartId);
-        toast.success('Cart Created Successfully.')
-
-      } else {
-        console.error('Failed to create cart:', cartResponse.data);
-        throw new Error('Failed to create cart.'); 
+      let cartId;      
+      // Step 1: Fetch existing cart or create a new one
+      const cartResponse = await getCartId(); //TOBEFIXED
+      if (cartResponse.status === 200) {
+        if(cartResponse.data.length == 0)
+        {
+          const createCartResponse = await createCart();
+          if (createCartResponse.status === 201) {
+            cartId = createCartResponse.data.id;
+            toast.success("Cart created successfully.");
+          } else {
+            throw new Error("Failed to create a cart.");
+          }
+        }       
+        else
+        {
+          cartId = (cartResponse.data[0].id);
+          const { data: cart } = await getCartItems(cartId);        
+          this.setState({ cart });
+        }
       }
-    } catch (error) {
-      console.error('Error adding product to cart:', error);
-      throw error; 
-    }
-  }
+      else {
+        throw new Error("Failed to fetch cart information.");
+      }
 
-  async addItemstoCart(cartId,product,quantity){
-    try {
-      const cartItemResponse = await addToCart(cartId,product.id,quantity);
+
+      // Step 2: Add item to the cart
+      const cartItemResponse = await addToCart(cartId, product.id, quantity);
       if (cartItemResponse.status === 201) {
-        toast.success('Item added to cart Successfully.')
+        toast.success("Item added to cart successfully.");
       } else {
-        console.error('Failed to add to cart:', cartItemResponse.data);
-        throw new Error('Failed to add to cart.'); 
+        console.error("Failed to add to cart:", cartItemResponse.data);
+        throw new Error("Failed to add to cart.");
       }
     } catch (error) {
-      console.error('Error adding product to cart:', error);
-      throw error; 
+      console.error("Error in cart operation:", error);
+      toast.error("An error occurred while processing your request.");
+      throw error;
     }
   }
 
@@ -56,12 +65,7 @@ class Products extends Component {
         }));
     }
     try {
-      let cartId = localStorage.getItem('cartId');
-      if (!cartId) {
-        this.persistCartDB();
-      }
-      this.addItemstoCart(cartId,product,1);
-
+      this.persistCartAndAddItem(product,1);
     } catch (error) {
       console.error('Error interacting cart:', error);
       throw error; 
