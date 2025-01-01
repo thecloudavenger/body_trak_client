@@ -8,7 +8,7 @@
 }
 
 .App-header {
-  background-color: #222;
+  background-color: #0faedf;
   height: 150px;
   padding: 20px;
   color: white;
@@ -20,6 +20,32 @@
 
 .App-intro {
   font-size: large;
+}
+
+.table {
+  background-color: #f8f9fa; /* Change background color of the table */
+  color:  #1623da; /* Change text color */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #e9ecef; /* Change striped row color */
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+  background-color: #ffffff; /* Change even row color (optional) */
+}
+
+.navbar {
+  background-color: #4caf50 !important; /* Change navbar background color */
+  color: white !important; /* Change text color */
+}
+
+.navbar a {
+  color: rgb(18, 183, 233) !important; /* Change link color */
+}
+
+.navbar a:hover {
+  color: #1623da !important; /* Change link hover color */
 }
 
 @keyframes App-logo-spin {

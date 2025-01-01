@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { getOrders } from "../services/orderService";
 import moment from 'moment';
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.min.css';
 
 class Orders extends Component {
     
@@ -9,8 +11,10 @@ class Orders extends Component {
     };
   
     async componentDidMount(){    
+      toast.success('Getting Orders')
       const {data : orders} = await getOrders();
       this.setState( {orders});
+      toast.success('Getting Orders Successful')
     }
     render() {
       return (
