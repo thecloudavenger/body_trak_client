@@ -5,6 +5,7 @@
   
 # Further Improvements
 - Added Tests
-- Functionality - Searching , Sorting , Pagination , Categories ; Error Handling
+- Functionality - Searching , Sorting , Pagination , Categories ; 
 - Adding formatiing for code
 - Http Service separated out
+- Error handling separated out
