@@ -1,3 +1,4 @@
 {
-  "apiUrl": "http://localhost:8000/"
+  "apiUrl": "http://localhost:8000/",
+  "payPalClientId": "AU6g8Nh2rZb8ni4btVX6yese6OxFiCuJN-XalOlFFWw8x-qUhrc-1bVX7DqymMBO4Tft1z4_C02kkGyW"
 }
