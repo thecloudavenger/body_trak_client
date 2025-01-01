@@ -13,7 +13,13 @@ class Orders extends Component {
     async componentDidMount(){    
       toast.success('Getting Orders')
       const {data : orders} = await getOrders();
-      this.setState( {orders});
+      // Sort orders by placed_date in descending order
+      const sortedOrders = orders.sort((a, b) => {
+        const dateA = new Date(a.placed_at);
+        const dateB = new Date(b.placed_at);
+        return dateB - dateA; 
+      });
+      this.setState({orders: sortedOrders});
       toast.success('Getting Orders Successful')
     }
     render() {

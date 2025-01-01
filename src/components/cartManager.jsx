@@ -5,6 +5,9 @@ import { toast } from "react-toastify";
 import { getCartId } from "../services/cartService";
 import Counters from './common/counters';
 import 'react-toastify/dist/ReactToastify.min.css';
+import { PayPalButton } from 'react-paypal-button-v2';
+import { payPalClientId } from "../config.json";
+
 
 class cartManager extends Component {
   state = {   
@@ -86,6 +89,7 @@ class cartManager extends Component {
         await createOrder(cartId);  
         toast.success('Order Success');
       }
+      window.location.reload(false);
     } 
     catch (error) {
       console.error('Error interacting cart:', error);
@@ -109,20 +113,6 @@ class cartManager extends Component {
     this.getCartAndUpdate(counters[index].id,counters[index].value,true);
   };
 
-  handleReset = () => {
-    const counters = this.state.counters.map(c => {
-      c.value = 0;
-      return c;
-    });
-    this.setState({ counters });
-  };
-
-  handleDelete = counterId => {
-    const counters = this.state.counters.filter(c => c.id !== counterId);
-    this.setState({ counters });
-  };
-
-
   render() {
     const { cart } = this.state;
     return (
@@ -140,13 +130,24 @@ class cartManager extends Component {
                   />
             <p>Cart Total Price:{this.state.totalCartPrice.toFixed(2) } </p>
             <div className="checkout-section">
-              <button
-                className="checkout-button"
-                disabled={cart.length === 0}
-                onClick={this.handleCreateOrder}
-              >
-                Create Order
-              </button>
+            <PayPalButton 
+                disabled={this.state.cart.length== 0}
+                amount={this.state.totalCartPrice.toFixed(2)}
+                onSuccess={(details, data) => {
+                  console.log(details);
+                  toast.success('Successful order creation in Paypal');
+                  this.handleCreateOrder();
+                  toast.success('Initiating Order Update')
+                  toast.success('Successful Order Update')
+                }}
+                onError= {(error) => {
+                  console.log(error)
+                  toast.error('Error Occurred')
+                }}               
+                options={{ 
+                  clientId: payPalClientId
+                }}
+              />
             </div>
           </div>
         )}
