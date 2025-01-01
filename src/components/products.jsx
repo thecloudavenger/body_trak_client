@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { getProducts } from "../services/productService";
 import { createCart,addToCart,getCartId,getCartItems } from "../services/cartService";
 import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.min.css';
 import logService from "../services/logService";
 
 class Products extends Component {
@@ -11,16 +12,21 @@ class Products extends Component {
   };
 
   async componentDidMount() {
+    toast.success('Getting Products')
     const { data: products } = await getProducts();
-    this.setState({ products });
+    const filteredProducts = products.filter((product) => {
+      return product.unit_price > 36;
+    }).slice(0, 10);
+    this.setState({ products: filteredProducts });
+    toast.success('Getting Products Successful')
   }
 
-  async persistCartAndAddItem(product, quantity) {
+  async persistCartAndAddItem(product) {
     try {
       
       let cartId;      
       const cartResponse = await getCartId();
-      if(cartResponse.data.length == 0)
+      if(cartResponse.data.length === 0)
         {
           const createCartResponse = await createCart();
           if (createCartResponse.status === 200) {
@@ -28,7 +34,7 @@ class Products extends Component {
             const cartResponse = await getCartId();            
             
             cartId = cartResponse.data[0].id;
-            const cartItemResponse = await addToCart(cartId, product.id, quantity);
+            const cartItemResponse = await addToCart(cartId, product.id, 1);
             console.log(cartItemResponse);
             toast.success("Item added to cart successfully.");
             const { data: cart } = await getCartItems(cartId);        
@@ -42,7 +48,7 @@ class Products extends Component {
         else
         {
           cartId = (cartResponse.data[0].id);
-          const cartItemResponse = await addToCart(cartId, product.id, quantity);
+          const cartItemResponse = await addToCart(cartId, product.id, 1);
           console.log(cartItemResponse);
           toast.success("Item added to cart successfully.");
           const { data: cart } = await getCartItems(cartId);        

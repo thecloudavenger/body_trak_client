@@ -28,7 +28,7 @@ export function createCart() {
 }
 
 
-export function addToCart(cartId, productId, quantity = 1) {
+export function addToCart(cartId, productId, quantity) {
     const api = axios.create({
       baseURL: apiEndpoint,
     });
@@ -46,6 +46,31 @@ export function addToCart(cartId, productId, quantity = 1) {
     );
 
     return api.post(
+        `store/carts/${cartId}/items/`,
+        { product_id: productId, 
+          quantity: quantity }
+      );
+  }
+
+
+  export function updateCart(cartId, productId, quantity) {
+    const api = axios.create({
+      baseURL: apiEndpoint,
+    });
+    api.interceptors.request.use(
+      (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          config.headers.Authorization = `JWT ${token}`;
+        }
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
+
+    return api.patch(
         `store/carts/${cartId}/items/`,
         { product_id: productId, 
           quantity: quantity }

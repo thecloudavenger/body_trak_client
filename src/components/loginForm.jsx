@@ -4,6 +4,7 @@ import Joi from "joi-browser";
 import Form from "./common/form";
 import auth from "../services/authService";
 import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.min.css';
 
 class LoginForm extends Form {
   state = {
